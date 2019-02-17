@@ -1,18 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/loginInput"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_margin="10dp"
+        android:hint="Login" />
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Password" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save credentials" />
+
+    <Button
+        android:id="@+id/retrieveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Retrieve credentials" />
+
+    <Button
+        android:id="@+id/hintsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Retrieve hints" />
+
+    <Button
+        android:id="@+id/deleteBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete credentials" />
+
+    <Button
+        android:id="@+id/disableBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Disable SmartLock" />
+
+
+</LinearLayout>
