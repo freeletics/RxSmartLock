@@ -1,6 +1,55 @@
-TODO Gradle Link, TODO Travis link
+[![Build Status](https://travis-ci.org/freeletics/RxSmartLock.svg?branch=master)](https://travis-ci.org/freeletics/RxSmartLock)
 
-# How to use
+## RxSmartLock
+
+This library is a wrapper for the [SmartLock](https://www.howtogeek.com/354482/what-is-google-smart-lock-exactly/) for passwords. It makes all interactions with SmartLock API through the reactive streams.
+
+## How to use
+
+To save credentials use the function `storeCredentials()`:
+```kotlin
+RxGoogleSmartLockManager.storeCredentials(context, credentials).subscribe()
+```
+
+To retrieve stored credentials use the function `retrieveCredentials()`:
+```kotlin
+RxGoogleSmartLockManager.retrieveCredentials(context).subscribe()
+```
+
+There are a couple of a few other methods to interract with SmartLock defined in the [interface](https://github.com/freeletics/RxSmartLock/blob/master/rxsmartlock/src/main/java/com/freeletics/rxsmartlock/SmartLockManager.kt).
+
+#### Testing
+
+For testing purposes there is [EmptySmartLockManager](https://github.com/freeletics/RxSmartLock/blob/master/rxsmartlock/src/main/java/com/freeletics/rxsmartlock/EmptySmartLockManager.kt). The methods of that class are empty. Inject `EmptySmartLockManager` for testing purposes to the classes you are testing.
+
+## Dependency
+Dependencies are hosted on Maven Central:
+
+```groovy
+implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.0'
+```
+Keep in mind that this library is written in kotlin which means you also need to add `kotlin-stdlib` to a project using RxSmartLock.
+
+## Snapshot
+Latest snapshot (directly published from master branch from Travis CI):
+
+```groovy
+allprojects {
+    repositories {
+        // Your repositories.
+        // ...
+        // Add url to snapshot repository
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+}
+
+```
+
+```groovy
+implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.0-SNAPSHOT'
+```
 
 
 # License
