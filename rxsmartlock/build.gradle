@@ -32,7 +32,9 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        // disabling this lint check because of Timber
+        // https://github.com/JakeWharton/timber/issues/242
+        disable 'ObsoleteLintCustomCheck'
     }
 }
 
