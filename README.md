@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/freeletics/RxSmartLock.svg?branch=master)](https://travis-ci.org/freeletics/RxSmartLock)
+[![Build Status](https://travis-ci.com/freeletics/RxSmartLock.svg?branch=master)](https://travis-ci.com/freeletics/RxSmartLock)
 
 # RxSmartLock
 
