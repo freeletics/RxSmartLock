@@ -27,6 +27,10 @@ else
   echo "signing.secretKeyRingFile=/home/travis/.gnupg/secring.gpg" >> rxsmartlock/gradle.properties
   echo "org.gradle.parallel=false" >> gradle.properties
   echo "org.gradle.configureondemand=false" >> gradle.properties
+
+  echo "travis content"
+  find /home/travis/.gnupg/
+  
   ./gradlew --stop
   ./gradlew :rxsmartlock:uploadArchives --no-daemon --no-parallel -Dorg.gradle.parallel=false -Dorg.gradle.configureondemand=false
   rm Freeletics.gpg
