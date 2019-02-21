@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/freeletics/RxSmartLock.svg?branch=master)](https://travis-ci.org/freeletics/RxSmartLock)
 
-## RxSmartLock
+# RxSmartLock
 
 This library is a wrapper for the [SmartLock](https://www.howtogeek.com/354482/what-is-google-smart-lock-exactly/) for passwords. It makes all interactions with SmartLock API through the reactive streams.
 
-## How to use
+# How to use
 
 To save credentials use the function `storeCredentials()`:
 ```kotlin
@@ -16,13 +16,13 @@ To retrieve stored credentials use the function `retrieveCredentials()`:
 RxGoogleSmartLockManager.retrieveCredentials(context).subscribe()
 ```
 
-There are a couple of a few other methods to interract with SmartLock defined in the [interface](https://github.com/freeletics/RxSmartLock/blob/master/rxsmartlock/src/main/java/com/freeletics/rxsmartlock/SmartLockManager.kt).
+There are a few other methods to interract with SmartLock defined in the [interface](https://github.com/freeletics/RxSmartLock/blob/master/rxsmartlock/src/main/java/com/freeletics/rxsmartlock/SmartLockManager.kt).
 
-#### Testing
+### Testing
 
 For testing purposes there is [EmptySmartLockManager](https://github.com/freeletics/RxSmartLock/blob/master/rxsmartlock/src/main/java/com/freeletics/rxsmartlock/EmptySmartLockManager.kt). The methods of that class are empty. Inject `EmptySmartLockManager` for testing purposes to the classes you are testing.
 
-## Dependency
+# Dependency
 Dependencies are hosted on Maven Central:
 
 ```groovy
@@ -30,7 +30,7 @@ implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.0'
 ```
 Keep in mind that this library is written in kotlin which means you also need to add `kotlin-stdlib` to a project using RxSmartLock.
 
-## Snapshot
+### Snapshot
 Latest snapshot (directly published from master branch from Travis CI):
 
 ```groovy
