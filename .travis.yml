@@ -1,0 +1,31 @@
+language: android
+android:
+  components:
+  - platform-tools
+  - tools
+  - android-28
+  - build-tools-28.0.3
+  - extra-android-support
+  - extra-android-m2repository
+  licenses:
+  - android-sdk-license-.+
+jdk:
+- oraclejdk8
+branches:
+  except:
+  - gh-pages
+notifications:
+  email: false
+sudo: false
+script: "./gradlew :rxsmartlock:build :rxsmartlock:test :example:assembleDebug :example:testDebug"
+cache:
+  directories:
+  - "$HOME/.gradle"
+  - "$HOME/.m2"
+after_success:
+- "./deploy.sh"
+env:
+  global:
+  - secure: gG+HpM8KVgh4OcR4gJEkafn1eUW5sIPuSvdWj4Wt49EeExMdrP9Q/aRbHitpbJhxhdBVYwlkMLEAmEZBaV7zXi8w1OyOxOl/TMTEi0QOaBbgpcBx8ElE6uKHOjyMLbqfJfINIppl+zA4CzcZlYyA+gb1YxVIKyGnWeLAa6+JlG7Wv/LRlOSSEof09jvpiPqkwatOmwG0mO6OO/ES3NdZ02lMg8pRdQR6D6OCJ4ifuPepGU8KzYNXc1xRA6cCaPOIxw4YEpkKWjEzx3k7UEngnra3bG8xCcQXDIjIFj7XI5smYm7EXnnEEi6vQOHdTvyoBxpP6Z/bDbrhmsCuOdvrHuXVl0BB8Wulm7mPT7Ft+7MwRcsnp9cp9USUHkArLJNnrpKZP2hQyvXwODbHFzFKei5ftyex0hxj7OloyPUnvhWLV7rk7IvoyigDPpiZ/JgD+slOwfTXF0TqWIHYGVEM5Sj+LRB8oXSC4evJnVJqG5BC5nOSAP9zl1BDyu91B6mdxmLPhucRBODv5o8SF1e1m5po1HhuT998jXzKIn/VeDeZStHbQMxS9ABirxkGnx3NGfAIBb+1iLW4R6VmfgdN7jzyR3mxGPbkZGpnWMSeTfe6ZhVgzAVISSY2gbGpSHpkX6Q3caEsefrjEzADYFh0Yz5yRTuf/clca5P0wFKLiIQ=
+  - secure: V+CZKSuuiHeaU3QLdevm7X3EMeNf8m+zWgaX+bFdt9Wne1BUNck+QQF8OhK7XMwl98ocy1QgzSwdIsbkzdVTstajXABLWWJIamaUa8qpBIZImI3iH7wwPAcdMFE9031CT/h3asJCWBpGWaA/VyvAw5sWlHQRqOsMAJHqU3vA0b9V5jsa9LViszYsJyRjmwmr+onwv0u+FBYgDDE1cELZnfOZBHnm2ziNkqO8sMdBc4kzqvwY+FJm02LfxCloukWD4/rRscxlyyBC9EODdJ8pLl000l4Esakf8CK6jb9Yj+3KvtQyNrHR0SorzKODorvUfqN71nEnWN20DYJN6Dntc4yNzEiYiQhGrz83PW4HGavxCpVhNB8MF14jTqG6cwfnLAFe1ZrjYB6OZE68M8kq7n/joeQGLOn8MB56mY/yjdo1lX/vB8lmj2IRHMyqkhBHAwX593ulgVnRc9s5QvR8YBSOe8OJOSR1q2KGyunMeveFnrPNQfcrIJvKwmIxt78XnEpz24QLWq6oG74/KE7VeM4m0pB/f3bFCSDXnrA17/YGI0pFl12sMo6xKINJXRJPHZW8zHcKtiuN4mRHseL9rlJhbuLz3ENHHKcJTZoYPutSMmHx57QmHrXlhv/zsCO2NCR8s8ZJfq3OovvQNjGTb9tV6BCB5njqMoJHWJmBQ9E=
+  - secure: gr31j0B3rHQOobGFFML8Pq613NnLc4RdR3GV0cDZfZbptgDfLavG89tPIkviYML66e+l1xaCYzWQivmLpmKs+prIKBLWnfb19lISwv1fBdJafbWoRb4WcXIo4lWcyaDxdnYsG3u+b7oadITCnMRGzAy/1KiniDvSC2EqUZShFf9iu96bcdx/Hbplm68Vw5BV2+77e00+IKkIR4NHZkOh8ZB6f7ytGedyF19LX3AyTNJzUwtBOo46pICdOufa5RS6nPP1iDNLWULEzF42j7vaP5Z8tU3nlp0zi2k/5l1U5Y22om9UFvOVt6x+xmoEPw0EyWpCp+BhHjKlbPLB5/qtYDfWsDdbiv3GU1zfBGx/Pkg+ivXavHZOdbczCzpjYWTeKRYmAqPiI26xYHDlBFKYcGSIhyzXIzMHWUqbETVbq7hrSXAShNLW2aGnLj8f8mEbexqYtoHFA6sq77yOj1xsUhkjQ5Mo2kGpR4+Ei7awMn7HkJIgGHF257YiDgxTyTOxDwx4BPT1FmHVS66d93yqfsq4jBQCSKIf2FJg4hYcIm5dxZhsR0akMxv9QQXBjRpTArM1RrPoGXRO+x0bLlWYMW1rX3T7T8NDEo0k0KjFJYBmwXiyzuDUBPvAjn8JNKekOYIjWYCqhnBJk+V1R5QE9FeGWVgodK30ClhY36yCsqM=
