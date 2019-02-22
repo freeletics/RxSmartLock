@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/freeletics/RxSmartLock.svg?branch=master)](https://travis-ci.com/freeletics/RxSmartLock)
+[![CircleCI](https://circleci.com/gh/freeletics/RxSmartLock.svg?style=svg)](https://circleci.com/gh/freeletics/RxSmartLock)
 
 # RxSmartLock
 
