@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - run: openssl aes-256-cbc -d -in Freeletics.gpg.enc -out Freeletics.gpg -k $ENCRYPTION_KEY
-      - run: gpg --import Freeletics.gpg
+      - run: gpg --batch --import Freeletics.gpg
       - run: echo "signing.password=$PGP_KEY" >> gradle.properties
       - run: echo "signing.secretKeyRingFile=/home/travis/.gnupg/secring.gpg" >> gradle.properties
       - run: ./gradlew :rxsmartlock:uploadArchives --no-daemon --no-parallel
