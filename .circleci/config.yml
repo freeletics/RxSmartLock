@@ -24,7 +24,7 @@ jobs:
     executor: android
     steps:
       - checkout
-      - run: openssl aes-256-cbc -d -in Freeletics.gpp.enc -out Freeletics.gpg -k $ENCRYPTION_KEY
+      - run: openssl aes-256-cbc -d -in Freeletics.gpg.enc -out Freeletics.gpg -k $ENCRYPTION_KEY
       - run: gpg --import Freeletics.gpg
       - run: echo "signing.password=$PGP_KEY" >> gradle.properties
       - run: echo "signing.secretKeyRingFile=/home/travis/.gnupg/secring.gpg" >> gradle.properties
