@@ -31,7 +31,7 @@ implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.0'
 Keep in mind that this library is written in kotlin which means you also need to add `kotlin-stdlib` to a project using RxSmartLock.
 
 ### Snapshot
-Latest snapshot (directly published from master branch from Travis CI):
+Latest snapshot (directly published from master branch):
 
 ```groovy
 allprojects {
