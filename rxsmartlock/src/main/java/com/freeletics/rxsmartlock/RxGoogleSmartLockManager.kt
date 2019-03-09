@@ -18,20 +18,16 @@ internal const val REQUEST_CODE_RESOLVE_SAVE = 64358
 
 internal const val REQUEST_CODE_RESOLVE_HINTS = 64359
 
-internal const val REQUEST_CODE_DELETE_CREDENTIALS = 64360
-
-internal const val REQUEST_CODE_DISABLE_AUTO_SIGN_IN = 64361
-
 object RxGoogleSmartLockManager : SmartLockManager {
 
     private var googleApiClientSubject = PublishSubject.create<GoogleApiClient>()
     private var googleApiClient: GoogleApiClient? = null
 
-    private val smartLockComponent = SmartLockComponent()
+    internal val smartLockComponent = SmartLockComponent()
 
     override fun retrieveCredentials(context: Context): Single<Credential> {
         Timber.d("RetrieveCredentials started...")
-        startHiddenActivity(context, REQUEST_CODE_RESOLVE_REQUEST)
+        startHiddenActivity(context)
         return googleApiClientSubject
             .concatMapSingle {
                 smartLockComponent.retrieveCredentialRequest(googleApiClient)
@@ -42,7 +38,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
 
     override fun storeCredentials(context: Context, credential: Credential): Completable {
         Timber.d("storeCredentials started...")
-        startHiddenActivity(context, REQUEST_CODE_RESOLVE_SAVE)
+        startHiddenActivity(context)
         return googleApiClientSubject
             .concatMapCompletable {
                 smartLockComponent.saveCredentialsRequest(googleApiClient, credential)
@@ -52,7 +48,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
 
     override fun deleteStoredCredentials(context: Context, credential: Credential): Completable {
         Timber.d("deleteStoredCredential started...")
-        startHiddenActivity(context, REQUEST_CODE_DELETE_CREDENTIALS)
+        startHiddenActivity(context)
         return googleApiClientSubject
             .concatMapCompletable {
                 smartLockComponent.deleteCredentialsRequest(googleApiClient, credential)
@@ -62,7 +58,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
 
     override fun retrieveSignInHints(context: Context): Single<Hint> {
         Timber.d("CredentialsClient retrieveSignInHints started...")
-        startHiddenActivity(context, REQUEST_CODE_RESOLVE_HINTS)
+        startHiddenActivity(context)
         return googleApiClientSubject
             .concatMapSingle {
                 smartLockComponent.retrieveSignInHintsRequest(googleApiClient)
@@ -73,19 +69,14 @@ object RxGoogleSmartLockManager : SmartLockManager {
 
     override fun disableAutoSignIn(context: Context): Completable {
         Timber.d("disableAutoSignIn")
-        startHiddenActivity(context, REQUEST_CODE_DISABLE_AUTO_SIGN_IN)
+        startHiddenActivity(context)
         return googleApiClientSubject.concatMapCompletable {
             smartLockComponent.disableAutoSignInRequest(googleApiClient).doFinally { dispose() }
         }
     }
 
-    private fun startHiddenActivity(context: Context, requestCode: Int) {
-        context.startActivity(
-            HiddenSmartLockActivity.newIntent(
-                context,
-                requestCode
-            )
-        )
+    private fun startHiddenActivity(context: Context) {
+        context.startActivity(HiddenSmartLockActivity.newIntent(context))
     }
 
     private fun dispose() {
