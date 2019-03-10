@@ -52,9 +52,5 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:4.2"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
-
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

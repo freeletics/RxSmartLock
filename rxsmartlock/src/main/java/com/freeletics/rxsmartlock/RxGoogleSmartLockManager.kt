@@ -23,7 +23,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
     private var googleApiClientSubject = PublishSubject.create<GoogleApiClient>()
     private var googleApiClient: GoogleApiClient? = null
 
-    internal val smartLockComponent = SmartLockComponent()
+    private val smartLockComponent = SmartLockComponent()
 
     override fun retrieveCredentials(context: Context): Single<Credential> {
         Timber.d("RetrieveCredentials started...")
