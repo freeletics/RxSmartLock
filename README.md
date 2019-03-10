@@ -1,5 +1,7 @@
 [![CircleCI](https://circleci.com/gh/freeletics/RxSmartLock.svg?style=svg)](https://circleci.com/gh/freeletics/RxSmartLock)
 
+[ ![Download](https://maven-badges.herokuapp.com/maven-central/com.freeletics.rxsmartlock/rxsmartlock/badge.svg) ](https://maven-badges.herokuapp.com/maven-central/com.freeletics.rxsmartlock/rxsmartlock)
+
 # RxSmartLock
 
 This library is a wrapper for the [SmartLock](https://www.howtogeek.com/354482/what-is-google-smart-lock-exactly/) for passwords. It makes all interactions with SmartLock API through the reactive streams.
