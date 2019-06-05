@@ -11,6 +11,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import com.google.android.gms.auth.api.credentials.CredentialsOptions
+
+
 
 internal const val REQUEST_CODE_RESOLVE_REQUEST = 64357
 
@@ -96,6 +99,9 @@ object RxGoogleSmartLockManager : SmartLockManager {
 
     internal fun performAction(activity: FragmentActivity) {
         if (googleApiClient == null) {
+
+            val options = CredentialsOptions.Builder().forceEnableSaveDialog().build()
+
             googleApiClient = GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                     override fun onConnected(p0: Bundle?) {
@@ -115,7 +121,8 @@ object RxGoogleSmartLockManager : SmartLockManager {
                     Timber.d(message)
                     googleApiClientSubject.onError(Exception(message))
                 }
-                .addApi(Auth.CREDENTIALS_API)
+                .addApi(Auth.CREDENTIALS_API, options)
+
                 .build()
         }
     }
