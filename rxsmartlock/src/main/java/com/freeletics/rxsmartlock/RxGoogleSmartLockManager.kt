@@ -14,12 +14,16 @@ import timber.log.Timber
 import com.google.android.gms.auth.api.credentials.CredentialsOptions
 
 
-
 internal const val REQUEST_CODE_RESOLVE_REQUEST = 64357
 
 internal const val REQUEST_CODE_RESOLVE_SAVE = 64358
 
 internal const val REQUEST_CODE_RESOLVE_HINTS = 64359
+
+/**
+ * Exception indicating that there was a failure while connecting to the GoogleApiClient.
+ */
+class GoogleApiConnectionError(message: String) : Exception(message)
 
 object RxGoogleSmartLockManager : SmartLockManager {
 
@@ -32,50 +36,52 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("RetrieveCredentials started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-            .concatMapSingle {
-                smartLockComponent.retrieveCredentialRequest(googleApiClient)
-                    .doFinally { dispose() }
-            }
-            .singleOrError()
+                .concatMapSingle {
+                    smartLockComponent.retrieveCredentialRequest(googleApiClient)
+                }
+                .singleOrError()
+                .doFinally { dispose() }
     }
 
     override fun storeCredentials(context: Context, credential: Credential): Completable {
         Timber.d("storeCredentials started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-            .concatMapCompletable {
-                smartLockComponent.saveCredentialsRequest(googleApiClient, credential)
-                    .doFinally { dispose() }
-            }
+                .concatMapCompletable {
+                    smartLockComponent.saveCredentialsRequest(googleApiClient, credential)
+                }
+                .doFinally { dispose() }
     }
 
     override fun deleteStoredCredentials(context: Context, credential: Credential): Completable {
         Timber.d("deleteStoredCredential started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-            .concatMapCompletable {
-                smartLockComponent.deleteCredentialsRequest(googleApiClient, credential)
-                    .doFinally { dispose() }
-            }
+                .concatMapCompletable {
+                    smartLockComponent.deleteCredentialsRequest(googleApiClient, credential)
+                }
+                .doFinally { dispose() }
     }
 
     override fun retrieveSignInHints(context: Context): Single<Hint> {
         Timber.d("CredentialsClient retrieveSignInHints started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-            .concatMapSingle {
-                smartLockComponent.retrieveSignInHintsRequest(googleApiClient)
-                    .doFinally { dispose() }
-            }
-            .singleOrError()
+                .concatMapSingle {
+                    smartLockComponent.retrieveSignInHintsRequest(googleApiClient)
+                }
+                .singleOrError()
+                .doFinally { dispose() }
     }
 
     override fun disableAutoSignIn(context: Context): Completable {
         Timber.d("disableAutoSignIn")
         startHiddenActivity(context)
-        return googleApiClientSubject.concatMapCompletable {
-            smartLockComponent.disableAutoSignInRequest(googleApiClient).doFinally { dispose() }
-        }
+        return googleApiClientSubject
+                .concatMapCompletable {
+                    smartLockComponent.disableAutoSignInRequest(googleApiClient)
+                }
+                .doFinally { dispose() }
     }
 
     private fun startHiddenActivity(context: Context) {
@@ -103,27 +109,27 @@ object RxGoogleSmartLockManager : SmartLockManager {
             val options = CredentialsOptions.Builder().forceEnableSaveDialog().build()
 
             googleApiClient = GoogleApiClient.Builder(activity)
-                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                    override fun onConnected(p0: Bundle?) {
-                        Timber.d("CredentialsApiClient connected")
-                        googleApiClientSubject.onNext(googleApiClient!!)
-                    }
+                    .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                        override fun onConnected(p0: Bundle?) {
+                            Timber.d("CredentialsApiClient connected")
+                            googleApiClientSubject.onNext(googleApiClient!!)
+                        }
 
-                    override fun onConnectionSuspended(i: Int) {
-                        val message = "CredentialsApiClient connection suspended, i: $i"
+                        override fun onConnectionSuspended(i: Int) {
+                            val message = "CredentialsApiClient connection suspended, i: $i"
+                            Timber.d(message)
+                            googleApiClientSubject.onError(Exception(message))
+                        }
+                    })
+                    .enableAutoManage(activity) {
+                        val message =
+                                "CredentialsApiClient connection failed, result: ${it.errorMessage}"
                         Timber.d(message)
-                        googleApiClientSubject.onError(Exception(message))
+                        googleApiClientSubject.onError(GoogleApiConnectionError(message))
                     }
-                })
-                .enableAutoManage(activity) {
-                    val message =
-                        "CredentialsApiClient connection failed, result: ${it.errorMessage}"
-                    Timber.d(message)
-                    googleApiClientSubject.onError(Exception(message))
-                }
-                .addApi(Auth.CREDENTIALS_API, options)
+                    .addApi(Auth.CREDENTIALS_API, options)
 
-                .build()
+                    .build()
         }
     }
 }
