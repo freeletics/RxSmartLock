@@ -28,7 +28,7 @@ For testing purposes there is [EmptySmartLockManager](https://github.com/freelet
 Dependencies are hosted on Maven Central:
 
 ```groovy
-implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.1'
+implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.2'
 ```
 Keep in mind that this library is written in kotlin which means you also need to add `kotlin-stdlib` to a project using RxSmartLock.
 
@@ -50,7 +50,7 @@ allprojects {
 ```
 
 ```groovy
-implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.2-SNAPSHOT'
+implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.3-SNAPSHOT'
 ```
 
 
