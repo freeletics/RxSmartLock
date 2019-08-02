@@ -36,10 +36,10 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("RetrieveCredentials started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-                .concatMapSingle {
+                .firstOrError()
+                .flatMap {
                     smartLockComponent.retrieveCredentialRequest(googleApiClient)
                 }
-                .singleOrError()
                 .doFinally { dispose() }
     }
 
@@ -47,7 +47,8 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("storeCredentials started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-                .concatMapCompletable {
+                .firstOrError()
+                .flatMapCompletable {
                     smartLockComponent.saveCredentialsRequest(googleApiClient, credential)
                 }
                 .doFinally { dispose() }
@@ -57,7 +58,8 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("deleteStoredCredential started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-                .concatMapCompletable {
+                .firstOrError()
+                .flatMapCompletable {
                     smartLockComponent.deleteCredentialsRequest(googleApiClient, credential)
                 }
                 .doFinally { dispose() }
@@ -67,10 +69,10 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("CredentialsClient retrieveSignInHints started...")
         startHiddenActivity(context)
         return googleApiClientSubject
-                .concatMapSingle {
+                .firstOrError()
+                .flatMap {
                     smartLockComponent.retrieveSignInHintsRequest(googleApiClient)
                 }
-                .singleOrError()
                 .doFinally { dispose() }
     }
 
@@ -78,7 +80,8 @@ object RxGoogleSmartLockManager : SmartLockManager {
         Timber.d("disableAutoSignIn")
         startHiddenActivity(context)
         return googleApiClientSubject
-                .concatMapCompletable {
+                .firstOrError()
+                .flatMapCompletable {
                     smartLockComponent.disableAutoSignInRequest(googleApiClient)
                 }
                 .doFinally { dispose() }
