@@ -20,6 +20,7 @@ class HiddenSmartLockActivity : FragmentActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         handleIntent(intent)
     }
 
