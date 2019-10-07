@@ -18,11 +18,10 @@ if (gradle.ext.isCiServer) {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 28
+        minSdkVersion 21
         versionCode 1
         versionName "1.0"
 
