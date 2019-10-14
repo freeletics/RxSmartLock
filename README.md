@@ -50,7 +50,7 @@ allprojects {
 ```
 
 ```groovy
-implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.4-SNAPSHOT'
+implementation 'com.freeletics.rxsmartlock:rxsmartlock:1.0.5-SNAPSHOT'
 ```
 
 
