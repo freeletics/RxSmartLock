@@ -36,6 +36,8 @@ class HiddenSmartLockActivity : FragmentActivity() {
 
     companion object {
         fun newIntent(context: Context): Intent =
-            Intent(context, HiddenSmartLockActivity::class.java)
+            Intent(context, HiddenSmartLockActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
     }
 }
