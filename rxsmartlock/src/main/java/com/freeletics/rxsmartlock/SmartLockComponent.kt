@@ -26,7 +26,7 @@ internal class SmartLockComponent {
     private var isDialogShown = false
 
     fun retrieveCredentialRequest(googleApiClient: GoogleApiClient?): Single<Credential> {
-        return Single.create { emitter ->
+        return Single.create<Credential> { emitter ->
             Timber.d("In retrieveCredentialRequest...")
 
             val credentialRequest = CredentialRequest.Builder()
@@ -41,6 +41,8 @@ internal class SmartLockComponent {
                         emitter
                     )
                 }
+        }.doOnError {
+            Timber.e(it)
         }
     }
 
@@ -53,8 +55,11 @@ internal class SmartLockComponent {
         if (status.isSuccess) {
             onSuccessCredentialsRequest(credentialRequestResult.credential, emitter)
         } else if (status.statusCode == CommonStatusCodes.SIGN_IN_REQUIRED) {
-            val message = "Credentials retrieve, sign in required. No credentials saved."
-            onErrorCredentialsRequest(message, emitter)
+            val error = SmartLockException(
+                reason = SmartLockException.SIGN_IN_REQUIRED,
+                message = "Credentials retrieve, sign in required. No credentials saved."
+            )
+            emitter.onError(error)
         } else {
             Timber.w(
                 "Credentials retrieve status: %s, message: %s, success: %b",
@@ -71,27 +76,26 @@ internal class SmartLockComponent {
                     status.startResolutionForResult(activity, REQUEST_CODE_RESOLVE_REQUEST)
                     isDialogShown = true
                 } catch (e: IntentSender.SendIntentException) {
-                    val message = "Retrieve credential, startResolutionForResult failed: $e"
-                    onErrorCredentialsRequest(message, emitter)
+                    val error = SmartLockException(
+                        reason = SmartLockException.START_RESOLUTION_FOR_RESULT_FAILED,
+                        message = "Retrieve credential, startResolutionForResult failed",
+                        throwable = e
+                    )
+                    emitter.onError(error)
                 }
             } else {
                 // Possible reasons for this:
                 // * "Network error"
                 // * "No eligible accounts can be found"
                 // * "At least one account on the device is in bad state"
-                val message =
-                    "Retrieve credential, no resolution. Message: ${credentialRequestResult.status.statusMessage}"
-                onErrorCredentialsRequest(message, emitter)
+                val error = SmartLockException(
+                    reason = SmartLockException.NO_RESOLUTION,
+                    message = "Retrieve credential, no resolution. " +
+                        "Message: ${credentialRequestResult.status.statusMessage}"
+                )
+                emitter.onError(error)
             }
         }
-    }
-
-    private fun onErrorCredentialsRequest(
-        message: String,
-        emitter: SingleEmitter<Credential>
-    ) {
-        Timber.e(message)
-        emitter.onError(Exception(message))
     }
 
     private fun onSuccessCredentialsRequest(
@@ -111,8 +115,11 @@ internal class SmartLockComponent {
                 activityResult.resultData.getParcelableExtra<Credential>(Credential.EXTRA_KEY)
             onSuccessCredentialsRequest(selectedCredentials, emitter)
         } else {
-            val message = "Fetching credentials failed: ${activityResult.requestCode}"
-            onErrorCredentialsRequest(message, emitter)
+            val error = SmartLockException(
+                reason = SmartLockException.FETCHING_CREDENTIALS_FAILED,
+                message = "Fetching credentials failed: ${activityResult.requestCode}"
+            )
+            emitter.onError(error)
         }
     }
 
@@ -128,6 +135,8 @@ internal class SmartLockComponent {
                 .setResultCallback { result ->
                     processSaveCredentialsCallback(googleApiClient, result, username, emitter)
                 }
+        }.doOnError {
+            Timber.e(it)
         }
     }
 
@@ -157,12 +166,19 @@ internal class SmartLockComponent {
                 status.startResolutionForResult(activity, REQUEST_CODE_RESOLVE_SAVE)
                 isDialogShown = true
             } catch (e: IntentSender.SendIntentException) {
-                val message = "Save credential startResolutionForResult failed: $e"
-                onErrorSaveCredentials(message, emitter)
+                val error = SmartLockException(
+                    reason = SmartLockException.START_RESOLUTION_FOR_RESULT_FAILED,
+                    message = "Save credential startResolutionForResult failed",
+                    throwable = e
+                )
+                emitter.onError(error)
             }
         } else {
-            val message = "Credentials cannot be saved for $username"
-            onErrorSaveCredentials(message, emitter)
+            val error = SmartLockException(
+                reason = SmartLockException.FAILED_TO_SAVE,
+                message = "Credentials cannot be saved for $username"
+            )
+            emitter.onError(error)
         }
     }
 
@@ -170,14 +186,12 @@ internal class SmartLockComponent {
         if (resultCode == Activity.RESULT_OK) {
             onSuccessSaveCredentials(emitter)
         } else {
-            val message = "Saving credentials failed: $resultCode"
-            onErrorSaveCredentials(message, emitter)
+            val error = SmartLockException(
+                reason = SmartLockException.FAILED_TO_SAVE,
+                message = "Saving credentials failed: $resultCode"
+            )
+            emitter.onError(error)
         }
-    }
-
-    private fun onErrorSaveCredentials(message: String, emitter: CompletableEmitter) {
-        Timber.e(message)
-        emitter.onError(Exception(message))
     }
 
     private fun onSuccessSaveCredentials(emitter: CompletableEmitter) {
@@ -214,9 +228,12 @@ internal class SmartLockComponent {
                     isDialogShown = true
                 }
             } catch (e: IntentSender.SendIntentException) {
-                val message = "Could not start hint picker Intent"
-                Timber.e(e, message)
-                emitter.onError(Exception(message))
+                val error = SmartLockException(
+                    reason = SmartLockException.FAILED_TO_SHOW_HINT_PICKER,
+                    message = "Could not start hint picker Intent",
+                    throwable = e
+                )
+                emitter.onError(error)
             }
         }
     }
@@ -231,9 +248,12 @@ internal class SmartLockComponent {
             Timber.d("Hints retrieved for %s", credential.id)
             emitter.onSuccess(Hint(credential))
         } else {
-            val message = "Retrieving hints failed: ${activityResult.resultCode}"
-            Timber.d(message)
-            emitter.onError(Exception(message))
+            emitter.onError(
+                SmartLockException(
+                    reason = SmartLockException.RETRIEVING_HINTS_FAILED,
+                    message = "Retrieving hints failed: ${activityResult.resultCode}"
+                )
+            )
         }
     }
 
@@ -251,9 +271,12 @@ internal class SmartLockComponent {
                         Timber.d("Credential deleted successfully")
                         emitter.onComplete()
                     } else {
-                        val message = "Deleting credentials failed: ${status.statusCode}"
-                        Timber.d(message)
-                        emitter.onError(Exception(message))
+                        emitter.onError(
+                            SmartLockException(
+                                reason = SmartLockException.DELETING_CREDENTIALS_FAILED,
+                                message = "Deleting credentials failed: ${status.statusCode}"
+                            )
+                        )
                     }
                 }
         }
@@ -267,9 +290,12 @@ internal class SmartLockComponent {
                     Timber.d("Auto sign disabled successfully")
                     emitter.onComplete()
                 } else {
-                    val message = "Auto sign disable failed: ${status.statusCode}"
-                    Timber.d(message)
-                    emitter.onError(Exception(message))
+                    emitter.onError(
+                        SmartLockException(
+                            reason = SmartLockException.FAILED_DISABLE_AUTO_SIGN_IN,
+                            message = "Auto sign disable failed: ${status.statusCode}"
+                        )
+                    )
                 }
             }
         }
@@ -278,5 +304,26 @@ internal class SmartLockComponent {
     fun deliverResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         activityResultSubject.onNext(ActivityResult(requestCode, resultCode, resultData))
         isDialogShown = false
+    }
+
+    /**
+     * Smart lock operation error.
+     */
+    class SmartLockException(
+        val reason: Int,
+        message: String,
+        throwable: Throwable? = null
+    ) : Exception(message, throwable) {
+        companion object {
+            const val SIGN_IN_REQUIRED = 0
+            const val START_RESOLUTION_FOR_RESULT_FAILED = 1
+            const val NO_RESOLUTION = 2
+            const val FETCHING_CREDENTIALS_FAILED = 3
+            const val FAILED_TO_SAVE = 4
+            const val FAILED_TO_SHOW_HINT_PICKER = 5
+            const val RETRIEVING_HINTS_FAILED = 6
+            const val DELETING_CREDENTIALS_FAILED = 7
+            const val FAILED_DISABLE_AUTO_SIGN_IN = 8
+        }
     }
 }
