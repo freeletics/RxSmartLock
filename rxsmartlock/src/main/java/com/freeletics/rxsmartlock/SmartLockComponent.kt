@@ -112,7 +112,7 @@ internal class SmartLockComponent {
     ) {
         if (activityResult.resultCode == Activity.RESULT_OK && activityResult.resultData != null) {
             val selectedCredentials =
-                activityResult.resultData.getParcelableExtra<Credential>(Credential.EXTRA_KEY)
+                activityResult.resultData.getParcelableExtra<Credential>(Credential.EXTRA_KEY)!!
             onSuccessCredentialsRequest(selectedCredentials, emitter)
         } else {
             val error = SmartLockException(
@@ -244,7 +244,7 @@ internal class SmartLockComponent {
     ) {
         if (activityResult.resultCode == Activity.RESULT_OK && activityResult.resultData != null) {
             val credential =
-                activityResult.resultData.getParcelableExtra<Credential>(Credential.EXTRA_KEY)
+                activityResult.resultData.getParcelableExtra<Credential>(Credential.EXTRA_KEY)!!
             Timber.d("Hints retrieved for %s", credential.id)
             emitter.onSuccess(Hint(credential))
         } else {

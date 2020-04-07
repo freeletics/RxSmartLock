@@ -15,13 +15,13 @@ class HiddenSmartLockActivity : FragmentActivity() {
             savedInstanceState == null
         )
         if (savedInstanceState == null) {
-            handleIntent(intent)
+            handleIntent()
         }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleIntent(intent)
+        handleIntent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -29,7 +29,7 @@ class HiddenSmartLockActivity : FragmentActivity() {
         RxGoogleSmartLockManager.handleActivityResult(requestCode, resultCode, data)
     }
 
-    private fun handleIntent(intent: Intent) {
+    private fun handleIntent() {
         Timber.i("SmartLock: HiddenSmartLockActivity::handleIntent")
         RxGoogleSmartLockManager.performAction(this)
     }
