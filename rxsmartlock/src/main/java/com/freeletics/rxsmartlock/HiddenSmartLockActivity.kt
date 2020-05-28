@@ -14,9 +14,7 @@ class HiddenSmartLockActivity : FragmentActivity() {
             "SmartLock: HiddenSmartLockActivity::onCreate fresh=%b",
             savedInstanceState == null
         )
-        if (savedInstanceState == null) {
-            handleIntent()
-        }
+        handleIntent()
     }
 
     override fun onNewIntent(intent: Intent) {

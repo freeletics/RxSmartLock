@@ -13,6 +13,7 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import com.google.android.gms.auth.api.credentials.CredentialsOptions
 import io.reactivex.Observable
+import java.util.concurrent.atomic.AtomicInteger
 
 internal const val REQUEST_CODE_RESOLVE_REQUEST = 64357
 
@@ -31,6 +32,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
     private var googleApiClient: GoogleApiClient? = null
 
     private val smartLockComponent = SmartLockComponent()
+    private val connectedClients = AtomicInteger(0)
 
     override fun retrieveCredentials(
         context: Context
@@ -38,7 +40,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
         .doOnSubscribe {
             Timber.d("RetrieveCredentials started...")
         }
-        .flatMapSingle {
+        .switchMapSingle {
             smartLockComponent.retrieveCredentialRequest(googleApiClient)
         }
         .firstOrError()
@@ -50,7 +52,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
         .doOnSubscribe {
             Timber.d("storeCredentials started...")
         }
-        .flatMap {
+        .switchMap {
             smartLockComponent
                 .saveCredentialsRequest(googleApiClient, credential)
                 .andThen(Observable.just(Unit))
@@ -65,7 +67,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
         .doOnSubscribe {
             Timber.d("deleteStoredCredential started...")
         }
-        .flatMap {
+        .switchMap {
             smartLockComponent
                 .deleteCredentialsRequest(googleApiClient, credential)
                 .andThen(Observable.just(Unit))
@@ -80,7 +82,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
         .doOnSubscribe {
             Timber.d("CredentialsClient retrieveSignInHints started...")
         }
-        .flatMapSingle {
+        .switchMapSingle {
             smartLockComponent.retrieveSignInHintsRequest(googleApiClient)
         }
         .firstOrError()
@@ -91,7 +93,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
         .doOnSubscribe {
             Timber.d("disableAutoSignIn started...")
         }
-        .flatMap {
+        .switchMap {
             smartLockComponent
                 .disableAutoSignInRequest(googleApiClient)
                 .andThen(Observable.just(Unit))
@@ -103,10 +105,16 @@ object RxGoogleSmartLockManager : SmartLockManager {
         context: Context
     ): Observable<GoogleApiClient> = Completable
         .fromAction {
+            connectedClients.incrementAndGet()
+            Timber.d("Connecting to Google Api client")
             context.startActivity(HiddenSmartLockActivity.newIntent(context))
         }
         .andThen(googleApiClientSubject)
-        .doFinally { dispose() }
+        .doFinally {
+            if (connectedClients.decrementAndGet() == 0) {
+                dispose()
+            }
+        }
         .publish()
         .refCount()
 
@@ -125,15 +133,23 @@ object RxGoogleSmartLockManager : SmartLockManager {
     }
 
     internal fun performAction(activity: FragmentActivity) {
-        check(googleApiClient == null) { "Google api client is still connected!" }
+        googleApiClient?.let {
+            // if it is in 'isConnecting' state, client would be emitted from callback below
+            if (it.isConnected) googleApiClientSubject.onNext(it)
+
+            return
+        }
 
         val options = CredentialsOptions.Builder().forceEnableSaveDialog().build()
 
         googleApiClient = GoogleApiClient.Builder(activity)
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                 override fun onConnected(p0: Bundle?) {
-                    Timber.d("CredentialsApiClient connected")
-                    googleApiClientSubject.onNext(googleApiClient!!)
+                    val client = googleApiClient
+                    if (connectedClients.get() > 0 && client != null) {
+                        Timber.d("CredentialsApiClient connected")
+                        googleApiClientSubject.onNext(client)
+                    }
                 }
 
                 override fun onConnectionSuspended(i: Int) {
