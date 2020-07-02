@@ -59,7 +59,7 @@ internal class SmartLockComponent {
                 reason = SmartLockException.SIGN_IN_REQUIRED,
                 message = "Credentials retrieve, sign in required. No credentials saved."
             )
-            emitter.onError(error)
+            emitter.tryOnError(error)
         } else {
             Timber.w(
                 "Credentials retrieve status: %s, message: %s, success: %b",
@@ -81,7 +81,7 @@ internal class SmartLockComponent {
                         message = "Retrieve credential, startResolutionForResult failed",
                         throwable = e
                     )
-                    emitter.onError(error)
+                    emitter.tryOnError(error)
                 }
             } else {
                 // Possible reasons for this:
@@ -93,7 +93,7 @@ internal class SmartLockComponent {
                     message = "Retrieve credential, no resolution. " +
                         "Message: ${credentialRequestResult.status.statusMessage}"
                 )
-                emitter.onError(error)
+                emitter.tryOnError(error)
             }
         }
     }
@@ -119,7 +119,7 @@ internal class SmartLockComponent {
                 reason = SmartLockException.FETCHING_CREDENTIALS_FAILED,
                 message = "Fetching credentials failed: ${activityResult.requestCode}"
             )
-            emitter.onError(error)
+            emitter.tryOnError(error)
         }
     }
 
@@ -171,14 +171,14 @@ internal class SmartLockComponent {
                     message = "Save credential startResolutionForResult failed",
                     throwable = e
                 )
-                emitter.onError(error)
+                emitter.tryOnError(error)
             }
         } else {
             val error = SmartLockException(
                 reason = SmartLockException.FAILED_TO_SAVE,
                 message = "Credentials cannot be saved for $username"
             )
-            emitter.onError(error)
+            emitter.tryOnError(error)
         }
     }
 
@@ -190,7 +190,7 @@ internal class SmartLockComponent {
                 reason = SmartLockException.FAILED_TO_SAVE,
                 message = "Saving credentials failed: $resultCode"
             )
-            emitter.onError(error)
+            emitter.tryOnError(error)
         }
     }
 
@@ -233,7 +233,7 @@ internal class SmartLockComponent {
                     message = "Could not start hint picker Intent",
                     throwable = e
                 )
-                emitter.onError(error)
+                emitter.tryOnError(error)
             }
         }
     }
@@ -248,7 +248,7 @@ internal class SmartLockComponent {
             Timber.d("Hints retrieved for %s", credential.id)
             emitter.onSuccess(Hint(credential))
         } else {
-            emitter.onError(
+            emitter.tryOnError(
                 SmartLockException(
                     reason = SmartLockException.RETRIEVING_HINTS_FAILED,
                     message = "Retrieving hints failed: ${activityResult.resultCode}"
@@ -271,7 +271,7 @@ internal class SmartLockComponent {
                         Timber.d("Credential deleted successfully")
                         emitter.onComplete()
                     } else {
-                        emitter.onError(
+                        emitter.tryOnError(
                             SmartLockException(
                                 reason = SmartLockException.DELETING_CREDENTIALS_FAILED,
                                 message = "Deleting credentials failed: ${status.statusCode}"
@@ -290,7 +290,7 @@ internal class SmartLockComponent {
                     Timber.d("Auto sign disabled successfully")
                     emitter.onComplete()
                 } else {
-                    emitter.onError(
+                    emitter.tryOnError(
                         SmartLockException(
                             reason = SmartLockException.FAILED_DISABLE_AUTO_SIGN_IN,
                             message = "Auto sign disable failed: ${status.statusCode}"
