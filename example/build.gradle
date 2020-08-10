@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation project(':rxsmartlock')
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.gms:play-services-gcm:16.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     testImplementation 'junit:junit:4.13'
