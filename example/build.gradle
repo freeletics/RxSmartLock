@@ -1,11 +1,21 @@
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
-    id "org.jetbrains.kotlin.android.extensions"
 }
 
 android {
     compileSdkVersion 29
+
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        dataBinding = false
+        aidl = false
+        renderScript = false
+        resValues = true
+        shaders = false
+    }
+
     defaultConfig {
         applicationId "com.freeletics.example"
         minSdkVersion 22

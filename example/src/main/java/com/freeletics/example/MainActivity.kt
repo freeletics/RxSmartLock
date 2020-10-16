@@ -3,46 +3,43 @@ package com.freeletics.example
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import com.freeletics.example.databinding.ActivityMainBinding
 import com.freeletics.rxsmartlock.RxGoogleSmartLockManager
 import com.google.android.gms.auth.api.credentials.Credential
-import kotlinx.android.synthetic.main.activity_main.deleteBtn
-import kotlinx.android.synthetic.main.activity_main.disableBtn
-import kotlinx.android.synthetic.main.activity_main.hintsBtn
-import kotlinx.android.synthetic.main.activity_main.loginInput
-import kotlinx.android.synthetic.main.activity_main.passwordInput
-import kotlinx.android.synthetic.main.activity_main.retrieveBtn
-import kotlinx.android.synthetic.main.activity_main.saveBtn
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var viewBinding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        saveBtn.setOnClickListener {
+        viewBinding.saveBtn.setOnClickListener {
             doSaveCredentials()
         }
 
-        retrieveBtn.setOnClickListener {
+        viewBinding.retrieveBtn.setOnClickListener {
             doRetrieveCredentials()
         }
 
-        deleteBtn.setOnClickListener {
+        viewBinding.deleteBtn.setOnClickListener {
             doDeleteCredentials()
         }
 
-        hintsBtn.setOnClickListener {
+        viewBinding.hintsBtn.setOnClickListener {
             doGetHints()
         }
 
-        disableBtn.setOnClickListener {
+        viewBinding.disableBtn.setOnClickListener {
             doDisableSmartLock()
         }
     }
 
     private fun doSaveCredentials() {
-        val login = loginInput.text.toString()
-        val password = passwordInput.text.toString()
+        val login = viewBinding.loginInput.text.toString()
+        val password = viewBinding.passwordInput.text.toString()
 
         val credential = Credential.Builder(login).setName(login)
             .setPassword(password)
@@ -56,8 +53,8 @@ class MainActivity : AppCompatActivity() {
         RxGoogleSmartLockManager.retrieveCredentials(this)
             .subscribe({
                 Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
-                loginInput.setText(it.name)
-                passwordInput.setText(it.password)
+                viewBinding.loginInput.setText(it.name)
+                viewBinding.passwordInput.setText(it.password)
             }, { Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show() })
     }
 
@@ -78,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         RxGoogleSmartLockManager.retrieveSignInHints(this)
             .subscribe({
                 Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
-                loginInput.setText(it.email)
+                viewBinding.loginInput.setText(it.email)
             }, { Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show() })
 
     }

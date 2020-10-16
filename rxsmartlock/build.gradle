@@ -22,6 +22,16 @@ if (gradle.ext.isCiServer) {
 android {
     compileSdkVersion 29
 
+    buildFeatures {
+        buildConfig = false
+        viewBinding = false
+        dataBinding = false
+        aidl = false
+        renderScript = false
+        resValues = true
+        shaders = false
+    }
+
     defaultConfig {
         minSdkVersion 21
         versionCode 1
