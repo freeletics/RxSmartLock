@@ -20,7 +20,7 @@ if (gradle.ext.isCiServer) {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     buildFeatures {
         buildConfig = false
