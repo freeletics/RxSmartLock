@@ -6,10 +6,14 @@ import android.widget.Toast
 import com.freeletics.example.databinding.ActivityMainBinding
 import com.freeletics.rxsmartlock.RxGoogleSmartLockManager
 import com.google.android.gms.auth.api.credentials.Credential
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     private fun doSaveCredentials() {
         val login = viewBinding.loginInput.text.toString()
         val password = viewBinding.passwordInput.text.toString()
@@ -44,18 +53,24 @@ class MainActivity : AppCompatActivity() {
         val credential = Credential.Builder(login).setName(login)
             .setPassword(password)
             .build()
-        RxGoogleSmartLockManager.storeCredentials(this, credential)
-            .subscribe({ Toast.makeText(this, "Stored successfully", Toast.LENGTH_SHORT).show() },
-                { Toast.makeText(this, "Failed storing: $it", Toast.LENGTH_SHORT).show() })
+        disposables += RxGoogleSmartLockManager
+            .storeCredentials(this, credential)
+            .subscribe(
+                { Toast.makeText(this, "Stored successfully", Toast.LENGTH_SHORT).show() },
+                { Toast.makeText(this, "Failed storing: $it", Toast.LENGTH_SHORT).show() }
+            )
     }
 
     private fun doRetrieveCredentials() {
-        RxGoogleSmartLockManager.retrieveCredentials(this)
-            .subscribe({
-                Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
-                viewBinding.loginInput.setText(it.name)
-                viewBinding.passwordInput.setText(it.password)
-            }, { Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show() })
+        disposables += RxGoogleSmartLockManager.retrieveCredentials(this)
+            .subscribe(
+                {
+                    Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
+                    viewBinding.loginInput.setText(it.name)
+                    viewBinding.passwordInput.setText(it.password)
+                },
+                { Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show() }
+            )
     }
 
     private fun doDeleteCredentials() {
@@ -65,26 +80,41 @@ class MainActivity : AppCompatActivity() {
             .setPassword(password)
             .build()
 
-        RxGoogleSmartLockManager.deleteStoredCredentials(this, credential)
-            .subscribe({
-                Toast.makeText(this, "Deleted successfully", Toast.LENGTH_SHORT).show()
-            }, { Toast.makeText(this, "Failed deleting: $it", Toast.LENGTH_SHORT).show() })
+        disposables += RxGoogleSmartLockManager.deleteStoredCredentials(this, credential)
+            .subscribe(
+                {
+                    Toast.makeText(this, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                },
+                {
+                    Toast.makeText(this, "Failed deleting: $it", Toast.LENGTH_SHORT).show()
+                }
+            )
     }
 
     private fun doGetHints() {
-        RxGoogleSmartLockManager.retrieveSignInHints(this)
-            .subscribe({
-                Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
-                viewBinding.loginInput.setText(it.email)
-            }, { Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show() })
+        disposables += RxGoogleSmartLockManager.retrieveSignInHints(this)
+            .subscribe(
+                {
+                    Toast.makeText(this, "Retrieved successfully", Toast.LENGTH_SHORT).show()
+                    viewBinding.loginInput.setText(it.email)
+                },
+                {
+                    Toast.makeText(this, "Failed retrieving: $it", Toast.LENGTH_SHORT).show()
+                }
+            )
 
     }
 
     private fun doDisableSmartLock() {
-        RxGoogleSmartLockManager.disableAutoSignIn(this)
-            .subscribe({
-                Toast.makeText(this, "Disabled successfully", Toast.LENGTH_SHORT).show()
-            }, { Toast.makeText(this, "Failed disabling: $it", Toast.LENGTH_SHORT).show() })
+        disposables += RxGoogleSmartLockManager.disableAutoSignIn(this)
+            .subscribe(
+                {
+                    Toast.makeText(this, "Disabled successfully", Toast.LENGTH_SHORT).show()
+                },
+                {
+                    Toast.makeText(this, "Failed disabling: $it", Toast.LENGTH_SHORT).show()
+                }
+            )
 
     }
 }

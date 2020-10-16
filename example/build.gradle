@@ -33,7 +33,6 @@ android {
 dependencies {
     implementation project(':rxsmartlock')
 
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
 
     testImplementation 'junit:junit:4.13'
