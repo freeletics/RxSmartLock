@@ -16,7 +16,8 @@ pluginManagement {
 
     plugins {
         id "org.jetbrains.kotlin.android" version "1.4.10"
-        id "com.vanniktech.maven.publish" version "0.11.1"
+        id "org.jetbrains.dokka" version "1.4.10"
+        id "com.vanniktech.maven.publish" version "0.13.0"
     }
 }
 
