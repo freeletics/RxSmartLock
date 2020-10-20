@@ -35,6 +35,7 @@ class HiddenSmartLockActivity : FragmentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_RESOLVE_HINTS) {
             RxGoogleSmartLockManager.handleActivityResult(resultCode, data)
+            finish()
         } else {
             Timber.w("Unknown request code: $requestCode")
         }
