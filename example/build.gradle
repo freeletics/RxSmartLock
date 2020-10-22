@@ -1,13 +1,25 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+}
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
+
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        dataBinding = false
+        aidl = false
+        renderScript = false
+        resValues = true
+        shaders = false
+    }
+
     defaultConfig {
         applicationId "com.freeletics.example"
         minSdkVersion 22
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,13 +33,5 @@ android {
 dependencies {
     implementation project(':rxsmartlock')
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.gms:play-services-gcm:16.1.0'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
