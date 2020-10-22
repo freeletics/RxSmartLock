@@ -1,1 +1,24 @@
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (it.requested.id.id == "com.android.application") {
+                useModule("com.android.tools.build:gradle:4.1.0")
+            } else if (it.requested.id.id == "com.android.library") {
+                useModule("com.android.tools.build:gradle:4.1.0")
+            }
+        }
+    }
+
+    plugins {
+        id "org.jetbrains.kotlin.android" version "1.4.10"
+        id "org.jetbrains.dokka" version "1.4.10"
+        id "com.vanniktech.maven.publish" version "0.13.0"
+    }
+}
+
 include ':example', ':rxsmartlock'

@@ -1,24 +1,22 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
-
-gradle.ext.isCiServer = System.getenv().containsKey("CI")
-logger.warn("Running on CI: ${gradle.ext.isCiServer}")
-
-if (gradle.ext.isCiServer) {
-    apply plugin: "com.vanniktech.maven.publish"
-    mavenPublish {
-        targets {
-            uploadArchives {
-                releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            }
-        }
-    }
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+    id "org.jetbrains.dokka"
+    id "com.vanniktech.maven.publish"
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
+
+    buildFeatures {
+        buildConfig = false
+        viewBinding = false
+        dataBinding = false
+        aidl = false
+        renderScript = false
+        resValues = true
+        shaders = false
+    }
 
     defaultConfig {
         minSdkVersion 21
@@ -36,17 +34,10 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.media:media:1.1.0'
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'io.reactivex.rxjava2:rxjava:2.2.19'
+    api 'com.google.android.gms:play-services-auth:18.1.0'
 
-    implementation 'javax.inject:javax.inject:1'
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    implementation 'com.google.android.gms:play-services-gcm:16.1.0'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
-
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
-
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
