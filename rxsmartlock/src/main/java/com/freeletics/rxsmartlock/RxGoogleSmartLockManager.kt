@@ -44,7 +44,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
                             message = "Retrieve credential, no resolution.",
                             throwable = it.exception
                         )
-                        emitter.onError(error)
+                        emitter.tryOnError(error)
                     }
                 }
         }.doOnError {
@@ -71,7 +71,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
                             message = "Credentials cannot be saved for $username",
                             throwable = it.exception
                         )
-                        emitter.onError(error)
+                        emitter.tryOnError(error)
                     }
                 }
         }.doOnError {
@@ -91,7 +91,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
                         Timber.d("Credential deleted successfully")
                         emitter.onComplete()
                     } else {
-                        emitter.onError(
+                        emitter.tryOnError(
                             SmartLockManager.SmartLockException(
                                 reason = SmartLockManager.SmartLockException.DELETING_CREDENTIALS_FAILED,
                                 message = "Deleting credentials failed.",
@@ -140,7 +140,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
                     message = "Could not start hint picker Intent",
                     throwable = e
                 )
-                emitter.onError(error)
+                emitter.tryOnError(error)
             }
         }
     }
@@ -157,7 +157,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
                         Timber.d("Auto sign disabled successfully")
                         emitter.onComplete()
                     } else {
-                        emitter.onError(
+                        emitter.tryOnError(
                             SmartLockManager.SmartLockException(
                                 reason = SmartLockManager.SmartLockException.FAILED_DISABLE_AUTO_SIGN_IN,
                                 message = "Auto sign disable failed.",
@@ -179,7 +179,7 @@ object RxGoogleSmartLockManager : SmartLockManager {
             Timber.d("Hints retrieved for %s", credential.id)
             emitter.onSuccess(Hint(credential))
         } else {
-            emitter.onError(
+            emitter.tryOnError(
                 SmartLockManager.SmartLockException(
                     reason = SmartLockManager.SmartLockException.RETRIEVING_HINTS_FAILED,
                     message = "Retrieving hints failed: ${activityResult.resultCode}"

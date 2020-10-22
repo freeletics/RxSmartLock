@@ -21,4 +21,4 @@ pluginManagement {
     }
 }
 
-include ':example', ':rxsmartlock'
+include ':rxsmartlock', ':example'
