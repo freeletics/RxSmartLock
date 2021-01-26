@@ -24,11 +24,17 @@ class HiddenSmartLockActivity : FragmentActivity() {
     }
 
     private fun handleIntent(intent: Intent) {
-        val hintIntent: PendingIntent = intent.getParcelableExtra(EXTRA_HINT_INTENT)!!
-        startIntentSenderForResult(
-            hintIntent.intentSender,
-            REQUEST_CODE_RESOLVE_HINTS, null, 0, 0, 0
-        )
+        val hintIntent: PendingIntent? = intent.getParcelableExtra(EXTRA_HINT_INTENT)
+        if (hintIntent != null) {
+            startIntentSenderForResult(
+                    hintIntent.intentSender,
+                    REQUEST_CODE_RESOLVE_HINTS, null, 0, 0, 0
+            )
+        } else {
+            // finish with error
+            RxGoogleSmartLockManager.handleActivityResult(RESULT_CANCELED, null)
+            finish()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
