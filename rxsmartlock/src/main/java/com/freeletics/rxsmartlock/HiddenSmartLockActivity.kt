@@ -1,6 +1,7 @@
 package com.freeletics.rxsmartlock
 
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -26,10 +27,17 @@ class HiddenSmartLockActivity : FragmentActivity() {
     private fun handleIntent(intent: Intent) {
         val hintIntent: PendingIntent? = intent.getParcelableExtra(EXTRA_HINT_INTENT)
         if (hintIntent != null) {
-            startIntentSenderForResult(
-                    hintIntent.intentSender,
-                    REQUEST_CODE_RESOLVE_HINTS, null, 0, 0, 0
-            )
+            try {
+                startIntentSenderForResult(
+                        hintIntent.intentSender,
+                        REQUEST_CODE_RESOLVE_HINTS, null, 0, 0, 0
+                )
+            } catch (e: ActivityNotFoundException) {
+                Timber.e(e,"SmartLock: Activity not found for intent - $hintIntent")
+                // may happen on some ROMs and we don't want a crash to happen
+                RxGoogleSmartLockManager.handleActivityResult(RESULT_CANCELED, null)
+                finish()
+            }
         } else {
             // finish with error
             RxGoogleSmartLockManager.handleActivityResult(RESULT_CANCELED, null)
